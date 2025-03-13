@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 
 const Login = () => {
+  const [isLogin, setIsLogin]=useState(true);
+  const toggleSignIn=()=>{
+    debugger;
+    setIsLogin(!isLogin);
+  }
   return (
     <>
       <div>
@@ -13,15 +18,20 @@ const Login = () => {
           />
         </div>
         <form className="loginForm">
-          <p className="title">Sign In</p>
+          <p className="title">{isLogin?"Sign In": "Sign up"}</p>
+          {!isLogin && <p className="input">
+            <input type="text" placeholder="Name" />
+          </p>}
           <p className="input">
             <input type="email" placeholder="Email" />
           </p>
           <p className="input">
             <input type="password" placeholder="Password" />
           </p>
-          <button className="submit">Sign In</button>
-          <p className="signup">New to Netflix? Sign up now.</p>
+          <button type="button" className="submit">{isLogin?"Sign In": "Sign up"}</button>
+          <p className="signup" onClick={toggleSignIn}>
+          {isLogin?"New to Netflix? Sign up now.": "Already a member. SignIn"}
+            </p>
         </form>
       </div>
     </>
