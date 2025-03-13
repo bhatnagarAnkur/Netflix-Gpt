@@ -107,3 +107,9 @@
     font-weight: bold;
     border-radius: 5px;
 }
+
+.error
+{
+    color: rgb(240, 7, 7);
+    margin-left: 100px ;
+}

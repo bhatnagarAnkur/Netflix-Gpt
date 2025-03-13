@@ -1,8 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Header from "./Header";
+import { validateUser } from "../utilities/validate";
 
 const Login = () => {
   const [isLogin, setIsLogin]=useState(true);
+  const [isError, setIsError]=useState("");
+  
+  const email=useRef(null);
+  const password=useRef(null);
+
+  const handleSubmit=()=>{
+
+
+    const message=validateUser(email.current.value,password.current.value);
+    console.log(message);
+    setIsError(message);
+  }
+
   const toggleSignIn=()=>{
     debugger;
     setIsLogin(!isLogin);
@@ -23,12 +37,16 @@ const Login = () => {
             <input type="text" placeholder="Name" />
           </p>}
           <p className="input">
-            <input type="email" placeholder="Email" />
+            <input type="email" placeholder="Email" ref={email} />
           </p>
           <p className="input">
-            <input type="password" placeholder="Password" />
+            <input type="password" placeholder="Password" ref={password}/>
           </p>
-          <button type="button" className="submit">{isLogin?"Sign In": "Sign up"}</button>
+
+          <p className="error">
+            {isError}
+          </p>
+          <button type="button" className="submit" onClick={handleSubmit}>{isLogin?"Sign In": "Sign up"}</button>
           <p className="signup" onClick={toggleSignIn}>
           {isLogin?"New to Netflix? Sign up now.": "Already a member. SignIn"}
             </p>
