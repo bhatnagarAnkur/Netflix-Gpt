@@ -1,26 +1,54 @@
 import React, { useState, useRef } from "react";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
 import Header from "./Header";
 import { validateUser } from "../utilities/validate";
+import { auth } from "../utilities/firebase";
 
 const Login = () => {
-  const [isLogin, setIsLogin]=useState(true);
-  const [isError, setIsError]=useState("");
-  
-  const email=useRef(null);
-  const password=useRef(null);
+  const [isLogin, setIsLogin] = useState(true);
+  const [isError, setIsError] = useState("");
 
-  const handleSubmit=()=>{
+  const email = useRef(null);
+  const password = useRef(null);
 
-
-    const message=validateUser(email.current.value,password.current.value);
+  const handleSubmit = () => {
+    const message = validateUser(email.current.value, password.current.value);
     console.log(message);
     setIsError(message);
-  }
 
-  const toggleSignIn=()=>{
+    if (message !== null) return;
+
+    if (!isLogin) {
+      //sign Up code
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          console.log("User signed up:", userCredential.user);
+        })
+        .catch((error) => {
+          console.error("Error signing up:", error.message);
+          setIsError(error.message);
+        });
+    } else {
+      //sign In code
+      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+        .then((userCredential) => {
+          console.log("User signed in:", userCredential.user);
+        })
+        .catch((error) => {
+          console.error("Error signing in:", error.message);
+          setIsError(error.message);
+        });
+    }
+  };
+
+  const toggleSignIn = () => {
     debugger;
     setIsLogin(!isLogin);
-  }
+  };
   return (
     <>
       <div>
@@ -32,24 +60,28 @@ const Login = () => {
           />
         </div>
         <form className="loginForm">
-          <p className="title">{isLogin?"Sign In": "Sign up"}</p>
-          {!isLogin && <p className="input">
-            <input type="text" placeholder="Name" />
-          </p>}
+          <p className="title">{isLogin ? "Sign In" : "Sign up"}</p>
+          {!isLogin && (
+            <p className="input">
+              <input type="text" placeholder="Name" />
+            </p>
+          )}
           <p className="input">
             <input type="email" placeholder="Email" ref={email} />
           </p>
           <p className="input">
-            <input type="password" placeholder="Password" ref={password}/>
+            <input type="password" placeholder="Password" ref={password} />
           </p>
 
-          <p className="error">
-            {isError}
-          </p>
-          <button type="button" className="submit" onClick={handleSubmit}>{isLogin?"Sign In": "Sign up"}</button>
+          <p className="error">{isError}</p>
+          <button type="button" className="submit" onClick={handleSubmit}>
+            {isLogin ? "Sign In" : "Sign up"}
+          </button>
           <p className="signup" onClick={toggleSignIn}>
-          {isLogin?"New to Netflix? Sign up now.": "Already a member. SignIn"}
-            </p>
+            {isLogin
+              ? "New to Netflix? Sign up now."
+              : "Already a member. SignIn"}
+          </p>
         </form>
       </div>
     </>
